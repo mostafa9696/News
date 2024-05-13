@@ -11,5 +11,8 @@ java {
 dependencies {
 
 
+    // hilt
+    implementation(libs.hilt.core)
+    
     testImplementation(libs.junit)
 }

@@ -81,6 +81,16 @@ dependencies {
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    // Okhttp
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+
+    testImplementation(libs.junit)
+
 
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.ui.tooling)

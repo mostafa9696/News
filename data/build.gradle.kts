@@ -22,4 +22,7 @@ dependencies {
     // Okhttp
     implementation(libs.okhttp)
     testImplementation(libs.junit)
+
+    // hilt 
+    implementation(libs.hilt.core)
 }
