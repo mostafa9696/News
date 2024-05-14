@@ -46,7 +46,7 @@ private fun NavGraphBuilder.newsAppNavGraph(
         NewsScreen(onNewsClick = onNewsClick)
     }
 
-    composable(route = "${MainDestinations.DETAILS_ROUTE}/{${BundleKey.NEWS_KEY}}"
+    composable(route = "${MainDestinations.DETAILS_ROUTE}/{news}}"
         ) {
         val gson: Gson = GsonBuilder().create()
         val newsJson = it.arguments?.getString(BundleKey.NEWS_KEY)

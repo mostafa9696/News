@@ -1,6 +1,5 @@
 package com.mostafa.news_list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mostafa.domain.helper.Response
@@ -41,10 +40,19 @@ class NewsViewModel @Inject constructor(
                         )
                     }
                 else if (response is Response.Error)
-                    Log.d("ee9", response.errorMessage)
+                    setErrorState(response.errorMessage)
             }.onFailure {
-                Log.d("ee9", it.message.toString())
+                setErrorState(it.message ?: "Error occurred, please try again")
             }
+        }
+    }
+
+    private fun setErrorState(errorMessage: String){
+        _uiState.update {
+            it.copy(
+                message = errorMessage,
+                isLoading = false
+            )
         }
     }
 }

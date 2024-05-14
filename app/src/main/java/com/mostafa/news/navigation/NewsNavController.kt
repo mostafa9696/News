@@ -16,6 +16,13 @@ class NewsNavController(val navController: NavHostController)  {
         val gson: Gson = GsonBuilder().create()
         val newsJson = gson.toJson(news)
         navController.navigate("${MainDestinations.DETAILS_ROUTE}/$newsJson")
+        navController.navigate(
+            "${MainDestinations.DETAILS_ROUTE}/{news}"
+                .replace(
+                    oldValue = "{news}",
+                    newValue = newsJson
+                )
+        )
     }
 }
 
