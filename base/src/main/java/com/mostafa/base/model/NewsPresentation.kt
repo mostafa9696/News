@@ -12,5 +12,11 @@ data class NewsPresentation(
     val url: String,
     val byline: String,
     val thumbnail: String,
-    val poster: String
-): Parcelable
+    val poster: String,
+) : Parcelable {
+
+    fun getPosterOrThumb(): String {
+        if (poster.isNotEmpty()) return poster
+        return thumbnail
+    }
+}

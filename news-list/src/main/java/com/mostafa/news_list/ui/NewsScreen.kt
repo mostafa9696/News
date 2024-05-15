@@ -15,9 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,12 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mostafa.base.compose.AnimatedAsyncImage
 import com.mostafa.base.compose.AppScaffold
+import com.mostafa.base.compose.PublishedDateView
 import com.mostafa.base.compose.ShowUserMessage
 import com.mostafa.base.model.NewsPresentation
 import com.mostafa.base.utils.Dimens
@@ -147,7 +144,7 @@ fun NewsItem(
             modifier = Modifier.size(60.dp)
         )
 
-        Column {
+        Column(modifier = Modifier.padding(start = Dimens.oneLevelPadding)) {
             Text(
                 text = newsPresentation.title,
                 style = MaterialTheme.typography.titleMedium,
@@ -169,15 +166,7 @@ fun NewsItem(
                     text = newsPresentation.byline,
                     modifier = Modifier.weight(1f),
                 )
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = null,
-                    tint = Color.Gray
-                )
-                Text(
-                    color = Color.Gray, text = newsPresentation.publishedDate,
-                    style = MaterialTheme.typography.titleSmall,
-                )
+                PublishedDateView(newsPresentation.publishedDate)
             }
         }
     }
@@ -192,22 +181,4 @@ fun ShimmerEffect() {
             )
         }
     }
-}
-
-
-@Preview
-@Composable
-fun ArticleItemPreview() {
-    NewsItem(
-        newsPresentation = NewsPresentation(
-            1,
-            title = "Biden Pardons Thousands Convicted of Marijuana Possession Under Federal Law",
-            abstract = "https://static01.nyt.com/images/2022/10/06/us/politics/06dc-Marijuana/merlin_204885015_0539936e-5bd1-4b45-93d7-5f5c0c80de4b-thumbStandard.jpg",
-            publishedDate = "2022-10-06",
-            byline = "By Michael D. Shear and Zolan Kanno-Youngs",
-            thumbnail = "",
-            poster = "",
-            url = ""
-        )
-    ) {}
 }

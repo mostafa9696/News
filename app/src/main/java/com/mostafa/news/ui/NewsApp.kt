@@ -55,7 +55,7 @@ private fun NavGraphBuilder.newsAppNavGraph(
         val news = it.arguments?.getParcelable<NewsPresentation>(BundleKey.NEWS_KEY)
 
         DetailsScreen(
-            newsPresentation = news!!
+            item = news!!
         )
     }
 
