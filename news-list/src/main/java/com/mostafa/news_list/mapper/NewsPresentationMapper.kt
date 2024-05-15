@@ -1,9 +1,9 @@
 package com.mostafa.news_list.mapper
 
+import com.mostafa.base.model.NewsPresentation
 import com.mostafa.domain.model.NewsModel
-import com.mostafa.news_list.model.NewsPresentation
 
-internal fun NewsModel.toNewsPresentation(): NewsPresentation {
+fun NewsModel.toNewsPresentation(): NewsPresentation {
     return NewsPresentation(
         id = id,
         title = title,

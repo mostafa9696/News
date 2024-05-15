@@ -1,4 +1,4 @@
-package com.mostafa.news.ui.theme
+package com.mostafa.base.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

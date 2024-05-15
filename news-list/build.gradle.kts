@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.kotlin.parcelize)
 
     kotlin("kapt")
 
@@ -53,6 +52,7 @@ dependencies {
 
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":base"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -79,9 +79,8 @@ dependencies {
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    // Coil
-    implementation(libs.coil)
-    implementation(libs.coil.compose)
+
+    implementation(libs.converter.gson)
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.runtime.compose)

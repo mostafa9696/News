@@ -58,6 +58,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":news-list"))
     implementation(project(":details"))
+    implementation(project(":base"))
 
 
     implementation(libs.androidx.core.ktx)

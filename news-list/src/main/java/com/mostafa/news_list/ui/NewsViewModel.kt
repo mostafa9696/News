@@ -1,11 +1,11 @@
-package com.mostafa.news_list
+package com.mostafa.news_list.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mostafa.base.model.NewsPresentation
 import com.mostafa.domain.helper.Response
 import com.mostafa.domain.usecases.GetNewsUseCase
 import com.mostafa.news_list.mapper.toNewsPresentation
-import com.mostafa.news_list.model.NewsPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,12 +47,18 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    private fun setErrorState(errorMessage: String){
+    private fun setErrorState(errorMessage: String) {
         _uiState.update {
             it.copy(
-                message = errorMessage,
+                errorMessage = errorMessage,
                 isLoading = false
             )
+        }
+    }
+
+    fun consumedUserMessage() {
+        _uiState.update {
+            it.copy(errorMessage = null)
         }
     }
 }
@@ -60,5 +66,5 @@ class NewsViewModel @Inject constructor(
 data class NewsUiState(
     val isLoading: Boolean = true,
     val news: List<NewsPresentation> = emptyList(),
-    val message: String? = null,
+    val errorMessage: String? = null,
 )

@@ -1,8 +1,9 @@
-package com.mostafa.news_list
+package com.mostafa.news_list.ui
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,9 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,13 +25,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.Dimens
-import com.mostafa.news_list.model.NewsPresentation
+import com.mostafa.base.compose.AnimatedAsyncImage
+import com.mostafa.base.compose.AppScaffold
+import com.mostafa.base.compose.ShowUserMessage
+import com.mostafa.base.model.NewsPresentation
+import com.mostafa.base.utils.Dimens
+import com.mostafa.news_list.R
 
 @Composable
 fun NewsScreen(
@@ -44,36 +47,87 @@ fun NewsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (uiState.isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        ShimmerEffect()
+    } else if (!uiState.errorMessage.isNullOrEmpty()) {
+        ShowUserMessage(
+            message = uiState.errorMessage ?: "",
+            consumedMessage = viewModel::consumedUserMessage
+        )
     } else {
-        NewsList(uiState.news, onNewsClick, modifier)
+        AppScaffold(
+            modifier = modifier.fillMaxSize(),
+            backgroundColor = MaterialTheme.colorScheme.background
+        ) {
+            NewsContent(
+                modifier.padding(it),
+                uiState.news,
+                onNewsClick
+            )
+        }
     }
 }
 
 @Composable
-fun NewsList(
+fun NewsContent(
+    modifier: Modifier,
     news: List<NewsPresentation>,
     onNewsClick: (news: NewsPresentation) -> Unit,
-    modifier: Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        NewsBar()
+
+        NewsList(
+            news = news,
+            onNewsClick = onNewsClick
+        )
+    }
+
+}
+
+@Composable
+fun NewsBar() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(top = Dimens.twoLevelPadding)
+    ) {
+        Image(
+            modifier = Modifier.size(
+                32.dp
+            ),
+            painter = painterResource(id = R.drawable.nytimes_logo),
+            contentDescription = null
+        )
+        Text(
+            text = "NYTimes News",
+            style = MaterialTheme.typography.headlineSmall,
+        )
+    }
+
+}
+
+@Composable
+fun NewsList(
+    modifier: Modifier = Modifier,
+    news: List<NewsPresentation>,
+    onNewsClick: (news: NewsPresentation) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
-            .padding(Dimens.threeLevelPadding)
             .fillMaxSize(),
-        contentPadding = PaddingValues(vertical = Dimens.oneLevelPadding),
+        contentPadding = PaddingValues(vertical = Dimens.twoLevelPadding),
         state = rememberLazyListState()
     ) {
         items(news.size) { index ->
             NewsItem(news[index], onNewsClick)
             Spacer(modifier = Modifier.height(Dimens.twoLevelPadding))
-            Divider(color = Color.Gray)
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsItem(
     newsPresentation: NewsPresentation,
@@ -82,7 +136,8 @@ fun NewsItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(Dimens.threeLevelPadding)
+            .background(Color.White)
+            .padding(horizontal = Dimens.threeLevelPadding, vertical = Dimens.twoLevelPadding)
             .clickable { onNewsClick(newsPresentation) },
         horizontalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding),
         verticalAlignment = Alignment.CenterVertically
@@ -127,6 +182,18 @@ fun NewsItem(
         }
     }
 }
+
+@Composable
+fun ShimmerEffect() {
+    Column(verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)) {
+        repeat(10) {
+            ItemShimmerEffect(
+                modifier = Modifier.padding(Dimens.twoLevelPadding)
+            )
+        }
+    }
+}
+
 
 @Preview
 @Composable

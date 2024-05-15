@@ -7,15 +7,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import androidx.navigation.navArgument
+import com.mostafa.base.model.NewsParamType
+import com.mostafa.base.model.NewsPresentation
+import com.mostafa.base.theme.MyNewsTheme
 import com.mostafa.details.ui.DetailsScreen
 import com.mostafa.news.navigation.BundleKey
 import com.mostafa.news.navigation.MainDestinations
 import com.mostafa.news.navigation.NewsNavController
-import com.mostafa.news.ui.theme.MyNewsTheme
-import com.mostafa.news_list.NewsScreen
-import com.mostafa.news_list.model.NewsPresentation
+import com.mostafa.news_list.ui.NewsScreen
 
 @Composable
 fun NewsApp(
@@ -46,15 +46,16 @@ private fun NavGraphBuilder.newsAppNavGraph(
         NewsScreen(onNewsClick = onNewsClick)
     }
 
-    composable(route = "${MainDestinations.DETAILS_ROUTE}/{news}}"
+    composable(route = "${MainDestinations.DETAILS_ROUTE}/{news}",
+        arguments = listOf(navArgument(BundleKey.NEWS_KEY) {
+            type = NewsParamType()
+        })
         ) {
-        val gson: Gson = GsonBuilder().create()
-        val newsJson = it.arguments?.getString(BundleKey.NEWS_KEY)
-        val news = gson.fromJson(newsJson, NewsPresentation::class.java)
+
+        val news = it.arguments?.getParcelable<NewsPresentation>(BundleKey.NEWS_KEY)
 
         DetailsScreen(
-            onPressBack = upPress,
-            newsPresentation = news
+            newsPresentation = news!!
         )
     }
 
