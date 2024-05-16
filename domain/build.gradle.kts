@@ -15,4 +15,11 @@ dependencies {
     implementation(libs.hilt.core)
     
     testImplementation(libs.junit)
+
+    // testing
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation (libs.kotlinx.coroutines.test)
+
 }

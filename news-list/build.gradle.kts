@@ -87,6 +87,12 @@ dependencies {
     implementation(libs.ui)
 
 
+    // testing
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation (libs.kotlinx.coroutines.test)
+
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.runtime.compose)

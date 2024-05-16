@@ -28,7 +28,7 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    private fun getNews() {
+    fun getNews() {
         viewModelScope.launch {
             kotlin.runCatching {
                 setState { copy(newsState = NewsContract.NewsUiState.Loading(true)) }
