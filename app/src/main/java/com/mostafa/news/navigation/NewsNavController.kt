@@ -9,7 +9,6 @@ import com.google.gson.Gson
 import com.mostafa.base.model.NewsPresentation
 
 class NewsNavController(val navController: NavHostController)  {
-    fun upPress() = navController.navigateUp()
 
     fun navToDetails(news: NewsPresentation) {
         val json = Uri.encode(Gson().toJson(news))

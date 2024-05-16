@@ -34,8 +34,6 @@ class NewsViewModel @Inject constructor(
                 setState { copy(newsState = NewsContract.NewsUiState.Loading(true)) }
                 newsUseCase.invoke()
             }.onSuccess { response ->
-                //setState { copy(newsState = NewsContract.NewsUiState.Loading(false)) }
-
                 if (response is Response.Success) {
                     val newsPresentation = response.data.map { newsModel ->
                         newsModel.toNewsPresentation()
@@ -54,9 +52,7 @@ class NewsViewModel @Inject constructor(
     }
 
     private fun setErrorState(errorMessage: String) {
-       // setState { copy(newsState = NewsContract.NewsUiState.Loading(false)) }
         setState { copy(newsState = NewsContract.NewsUiState.DisplayError(errorMessage)) }
-
     }
 }
 

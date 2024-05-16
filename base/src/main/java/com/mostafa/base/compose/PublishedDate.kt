@@ -18,7 +18,6 @@ fun PublishedDateView(publishedDate: String, color: Color){
     Row(
         modifier = Modifier.padding(
             top = Dimens.oneLevelPadding,
-            start = Dimens.oneLevelPadding
         ),
         verticalAlignment = Alignment.CenterVertically
     ) {
