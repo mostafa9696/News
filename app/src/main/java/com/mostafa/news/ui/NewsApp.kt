@@ -1,10 +1,10 @@
 package com.mostafa.news.ui
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -17,46 +17,41 @@ import com.mostafa.news.navigation.MainDestinations
 import com.mostafa.news.navigation.NewsNavController
 import com.mostafa.news_list.ui.NewsScreen
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NewsApp(
     appNavController: NewsNavController,
 ) {
-    MyNewsTheme {
-        Surface {
+    SharedTransitionLayout {
+        MyNewsTheme {
             NavHost(
                 modifier = Modifier.fillMaxSize(),
                 navController = appNavController.navController,
-                startDestination = MainDestinations.NEWS_ROUTE
+                startDestination = MainDestinations.NEWS_ROUTE,
             ) {
-                newsAppNavGraph(
-                    upPress = appNavController::upPress,
-                    onNewsClick = appNavController::navToDetails,
-                )
+
+                composable(route = MainDestinations.NEWS_ROUTE) {
+                    NewsScreen(
+                        onNewsClick = appNavController::navToDetails,
+                        animatedVisibilityScope = this@composable
+                    )
+                }
+
+                composable(
+                    route = "${MainDestinations.DETAILS_ROUTE}/{news}",
+                    arguments = listOf(navArgument(BundleKey.NEWS_KEY) {
+                        type = NewsParamType()
+                    })
+                ) {
+
+                    val news = it.arguments?.getParcelable<NewsPresentation>(BundleKey.NEWS_KEY)
+
+                    DetailsScreen(
+                        item = news!!,
+                        animatedVisibilityScope = this@composable
+                    )
+                }
             }
         }
     }
-}
-
-private fun NavGraphBuilder.newsAppNavGraph(
-    upPress: () -> Unit,
-    onNewsClick: (news: NewsPresentation) -> Unit,
-) {
-
-    composable(route = MainDestinations.NEWS_ROUTE) {
-        NewsScreen(onNewsClick = onNewsClick)
-    }
-
-    composable(route = "${MainDestinations.DETAILS_ROUTE}/{news}",
-        arguments = listOf(navArgument(BundleKey.NEWS_KEY) {
-            type = NewsParamType()
-        })
-        ) {
-
-        val news = it.arguments?.getParcelable<NewsPresentation>(BundleKey.NEWS_KEY)
-
-        DetailsScreen(
-            item = news!!
-        )
-    }
-
 }

@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import com.mostafa.base.utils.Dimens
 
 @Composable
-fun PublishedDateView(publishedDate: String){
+fun PublishedDateView(publishedDate: String, color: Color){
     Row(
         modifier = Modifier.padding(
             top = Dimens.oneLevelPadding,
@@ -25,10 +25,10 @@ fun PublishedDateView(publishedDate: String){
         Icon(
             imageVector = Icons.Default.DateRange,
             contentDescription = null,
-            tint = Color.Gray
+            tint = color
         )
         Text(
-            color = Color.Gray, text = publishedDate,
+            color = color, text = publishedDate,
             style = MaterialTheme.typography.titleSmall,
         )
     }

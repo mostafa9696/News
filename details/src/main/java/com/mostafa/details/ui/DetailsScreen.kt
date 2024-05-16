@@ -1,5 +1,8 @@
 package com.mostafa.details.ui
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,22 +36,29 @@ import com.mostafa.base.compose.PublishedDateView
 import com.mostafa.base.model.NewsPresentation
 import com.mostafa.base.utils.Dimens
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun DetailsScreen(
+fun SharedTransitionScope.DetailsScreen(
     modifier: Modifier = Modifier,
     item: NewsPresentation,
+    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
 
     AppScaffold(
         modifier = modifier.fillMaxSize(),
         backgroundColor = MaterialTheme.colorScheme.background
     ) {
-        DetailsContent(modifier.padding(it), item)
+        DetailsContent(modifier.padding(it), item, animatedVisibilityScope)
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun DetailsContent(modifier: Modifier, item: NewsPresentation) {
+fun SharedTransitionScope.DetailsContent(
+    modifier: Modifier,
+    item: NewsPresentation,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
@@ -60,13 +70,18 @@ fun DetailsContent(modifier: Modifier, item: NewsPresentation) {
             AnimatedAsyncImage(
                 imageUrl = item.getPosterOrThumb(),
                 modifier = Modifier
+                    .sharedElement(
+                        rememberSharedContentState(key = "image-${item.id}"),
+                        animatedVisibilityScope,
+                    ).skipToLookaheadSize()
                     .height(LocalConfiguration.current.screenHeightDp.dp / 3)
                     .fillMaxWidth()
+
             )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .drawBehind { drawRect(color = Color(0x54000000)) }
+                    .drawBehind { drawRect(color = Color(0x60000000)) }
                     .padding(Dimens.twoLevelPadding)
                     .align(Alignment.BottomStart)
             ) {
@@ -80,12 +95,19 @@ fun DetailsContent(modifier: Modifier, item: NewsPresentation) {
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(Dimens.oneLevelPadding))
-                PublishedDateView(item.publishedDate)
+                PublishedDateView(item.publishedDate, Color.White)
             }
         }
 
         Text(
-            modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
+            modifier = Modifier
+                .padding(horizontal = Dimens.twoLevelPadding)
+                .sharedElement(
+                    state = rememberSharedContentState(
+                        key = "title-${item.id}}"
+                    ),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                ),
             text = item.title,
             style = MaterialTheme.typography.headlineMedium
         )
@@ -118,3 +140,4 @@ fun DetailsContent(modifier: Modifier, item: NewsPresentation) {
         }
     }
 }
+

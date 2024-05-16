@@ -1,45 +1,51 @@
 package com.mostafa.news_list.ui
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mostafa.base.model.NewsPresentation
+import com.mostafa.base.mvi.BaseViewModel
 import com.mostafa.domain.helper.Response
 import com.mostafa.domain.usecases.GetNewsUseCase
 import com.mostafa.news_list.mapper.toNewsPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
     private val newsUseCase: GetNewsUseCase,
-) : ViewModel() {
-    private val _uiState = MutableStateFlow(NewsUiState())
-    val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
+) : BaseViewModel<NewsContract.Event, NewsContract.State>() {
 
-    init {
-        getNews()
+    override fun createInitialState(): NewsContract.State {
+        return NewsContract.State(
+            NewsContract.NewsUiState.Idle,
+        )
+    }
+
+    override fun handleEvent(event: NewsContract.Event) {
+        when (event) {
+            is NewsContract.Event.OnLoadNewsList -> {
+                getNews()
+            }
+        }
     }
 
     private fun getNews() {
         viewModelScope.launch {
             kotlin.runCatching {
+                setState { copy(newsState = NewsContract.NewsUiState.Loading(true)) }
                 newsUseCase.invoke()
             }.onSuccess { response ->
-                if (response is Response.Success)
-                    _uiState.update {
-                        it.copy(
-                            news = response.data.map { newsModel ->
-                                newsModel.toNewsPresentation()
-                            },
-                            isLoading = false
+                //setState { copy(newsState = NewsContract.NewsUiState.Loading(false)) }
+
+                if (response is Response.Success) {
+                    val newsPresentation = response.data.map { newsModel ->
+                        newsModel.toNewsPresentation()
+                    }
+                    setState {
+                        copy(
+                            newsState = NewsContract.NewsUiState.DisplayNews(newsPresentation),
                         )
                     }
-                else if (response is Response.Error)
+                } else if (response is Response.Error)
                     setErrorState(response.errorMessage)
             }.onFailure {
                 setErrorState(it.message ?: "Error occurred, please try again")
@@ -48,23 +54,9 @@ class NewsViewModel @Inject constructor(
     }
 
     private fun setErrorState(errorMessage: String) {
-        _uiState.update {
-            it.copy(
-                errorMessage = errorMessage,
-                isLoading = false
-            )
-        }
-    }
+       // setState { copy(newsState = NewsContract.NewsUiState.Loading(false)) }
+        setState { copy(newsState = NewsContract.NewsUiState.DisplayError(errorMessage)) }
 
-    fun consumedUserMessage() {
-        _uiState.update {
-            it.copy(errorMessage = null)
-        }
     }
 }
 
-data class NewsUiState(
-    val isLoading: Boolean = true,
-    val news: List<NewsPresentation> = emptyList(),
-    val errorMessage: String? = null,
-)
