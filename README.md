@@ -37,10 +37,7 @@ modular pieces serving one particular purpose.
 
 #### Data
 
-- ```data```
-
-Handles data interacting with the network and is later serverd up to the presentation layer through
-domain object
+the ```data``` layer Handles data interacting with the network 
 
 ## Tech Stack
 
